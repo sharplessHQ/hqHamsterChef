@@ -1,0 +1,20 @@
+h3 {
+  color: #005E61;
+}
+
+table {
+  font-weight: bold;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+}
+
+td {
+  border: 1px solid #00A8AD;
+  padding-inline-end: 10px;
+  padding-inline-start: 10px;
+}
+
+#keyList {
+  color: #005E61;
+}
