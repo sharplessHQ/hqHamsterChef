@@ -42,16 +42,27 @@ class App extends React.Component {
       recipeList: {},
       cookableRecipes: [],
       username: '',
-      password: ''
+      password: '',
+      showRecipe: false,
+      message: '',
+      toLogin: false
     };
   }
 
   componentDidMount() {
+    let username = localStorage.getItem('user');
+    if (username !== null) {
+      this.setState({username: username});
+    }
     this.getRecipes();
   }
 
   getRecipes(keyword) {
-    axios('/recipes')
+    console.log('getRecipes State:', this.state);
+    // let username = localStorage.getItem('user');
+    let username = this.state.username;
+    axios.get(`/recipes?username=${username}`)
+    // axios.get('/recipes', {params:{username: this.state.username}})
       .then(res => res.data)
       .then(data => {
         // console.log('data', data)
@@ -105,7 +116,7 @@ class App extends React.Component {
   searchRecipe(key) {
     console.log(`${key} was searched!`);
 
-    axios.post('/recipes', {keyword: key})
+    axios.post('/recipes', {keyword: key, username: this.state.username})
       .then(msg => {
         // console.log('msg', msg)
         console.log(`search ajax worked: ${msg.data}`);
@@ -117,6 +128,112 @@ class App extends React.Component {
       })
 
     this.getRecipes();
+  }
+
+
+  handleRegister(event) {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
+  register() {
+    console.log("name", document.getElementById("username").value);
+    const data = {
+      username: this.state.username,
+      password: this.state.password
+    };
+    console.log('state before register', this.state)
+
+    axios.post('/register', data)
+      .then(result => {
+        // console.log(result, typeof result);
+        console.log('result from app:', result.data.split(' ')[0], result.data);
+        let newState;
+        if (result.data === 'nullEntry') {
+          console.log('Cannot be null', result.data);
+          newState = {
+            message: 'Cannot be null!'
+          };
+        } else if (result.data.split(' ')[0] === 'New') {
+          localStorage.setItem('user', this.state.username);
+          newState = {
+            showRecipe: true
+          };
+          this.getRecipes();
+        } else {
+          newState = {
+            password: '',
+            message: 'Username exists! Please login!',
+            toLogin: true
+          };
+          localStorage.setItem('user', this.state.username);
+          this.login();
+        }
+        this.setState(newState);
+        console.log('state after register', this.state);
+      })
+      .catch(err => console.log('err:, err'))
+  }
+
+  handleLogin(event) {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
+  login() {
+    console.log("name", document.getElementById("username").value);
+    const data = {
+      username: this.state.username,
+      password: this.state.password
+    };
+    console.log('state before register', this.state)
+
+    axios.post('/login', data)
+      .then(result => {
+        // console.log(result, typeof result);
+        // localStorage.setItem('user', this.state.username);
+        console.log('password correct?', result.data);
+        let newState;
+        if (this.state.toLogin) {
+          // localStorage.removeItem('user');
+          newState = {
+            password: '',
+            message: 'Username exists! Please login!',
+            toLogin: false
+          };
+        } else if (result.data === 'noExistUser') {
+          newState = {
+            message: 'Not a existing user! Try again!'
+          }
+        } else if (result.data === 'successLogin') {
+          localStorage.setItem('user', this.state.username);
+          newState = {
+            showRecipe: true
+          };
+        } else {
+          newState = {
+            password: '',
+            showRecipe: false,
+            message: 'Incorrect Password. Try again!'
+          };
+        }
+        this.setState(newState);
+        console.log('state after register', this.state);
+      })
+      .catch(err => console.log('err:, err'))
+    this.getRecipes();
+  }
+
+  toRegister() {
+    localStorage.removeItem('user');
+    this.setState({
+      username: '',
+      password: '',
+      showRecipe: false,
+      message: ''
+    })
   }
 
   getImages() {
@@ -131,14 +248,14 @@ class App extends React.Component {
   }
 
   render() {
-    if (localStorage.getItem('user') === null) {
+    if (!this.state.showRecipe) {
       // console.log('haha')
       return (
         <ErrorBoundary>
           <Suspense fallback={renderLoader()}>
             {this.getImages()}
             <div className="allContent">
-              <Register/>
+              <Register handleRegister={this.handleRegister.bind(this)} register={this.register.bind(this)} handleLogin={this.handleLogin.bind(this)} login={this.login.bind(this)} toRegister={this.toRegister.bind(this)} username={this.state.username} password={this.state.password} message={this.state.message}/>
             </div>
           </Suspense>
         </ErrorBoundary>

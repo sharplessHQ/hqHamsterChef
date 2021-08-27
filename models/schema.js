@@ -4,7 +4,7 @@ const mongoose = require ('mongoose');
 const { Schema } = mongoose;
 
 const recipeSchema = new Schema({
-  // username: String,
+  username: String,
   keyword: String,
   label: String,
   calories: Number,

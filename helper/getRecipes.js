@@ -25,10 +25,10 @@ let getRecipes = (keyword, callback) => {
 };
 
 
-let save = async (keyword, data, cb) => {
+let save = async (username, keyword, data, cb) => {
   const ingredientsArr = data.ingredientLines.join(' ').toUpperCase().split(/[\s,]+/);
   const recipe = new Recipe({
-    // username: username,
+    username: username,
     keyword: keyword,
     label: data.label,
     calories: data.calories,
@@ -40,7 +40,7 @@ let save = async (keyword, data, cb) => {
     cuisineType: data.cuisineType,
     yield: data.yield
   });
-  const recipeExist = await Recipe.findOne( {label: data.label} );
+  const recipeExist = await Recipe.findOne( {username: username, label: data.label} );
   if (recipeExist) {
     return cb(`${data.label} exists!`);
   }
@@ -48,31 +48,33 @@ let save = async (keyword, data, cb) => {
   return recipe.save();
 }
 
-let find = async () => {
-  return Recipe.find({}).sort({keyword: 1});
+let find = async (username) => {
+  return Recipe.find({username: username}).sort({keyword: 1});
 }
 
-let findKeywordRecipes = async (keyword) => {
-  return Recipe.find({keyword: keyword}).sort({label: 1});
+let findKeywordRecipes = async (username, keyword) => {
+  return Recipe.find({username: username, keyword: keyword}).sort({label: 1});
 }
 
-let findCookableRecipes = async (terms) => {
+let findCookableRecipes = async (username, terms) => {
   let termArr = terms.toUpperCase().split(' ');
-  return Recipe.find({allIngrediants: {$all: termArr}}).sort({keyword: 1});
+  return Recipe.find({username: username, allIngrediants: {$all: termArr}}).sort({keyword: 1});
 }
 
-let saveUser = async (data, cb) => {
+let saveUser = async (data) => {
   const user = new User({
-    // username: username,
     username: data.username,
     password: data.password
   });
   const userExist = await User.findOne( {username: data.username} );
   console.log('userExist', userExist)
   if (userExist) {
-    return cb(`${data.username} exists!`);
+    return `User ${data.username} exists!`;
   }
-  cb(`${data.username} saved!`);
+  // cb(`User ${data.username} has been saved!`);
+  if (data.username === '' || data.password === '') {
+    return 'nullEntry';
+  }
   return user.save();
 }
 
