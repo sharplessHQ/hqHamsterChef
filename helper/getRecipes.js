@@ -38,7 +38,8 @@ let save = async (username, keyword, data, cb) => {
     allIngrediants: ingredientsArr,
     url: data.url,
     cuisineType: data.cuisineType,
-    yield: data.yield
+    yield: data.yield,
+    favorite: false
   });
   const recipeExist = await Recipe.findOne( {username: username, label: data.label} );
   if (recipeExist) {
@@ -48,15 +49,52 @@ let save = async (username, keyword, data, cb) => {
   return recipe.save();
 }
 
-let find = async (username) => {
+let fav = (username, label, fav, cb) => {
+  Recipe.updateOne({username: username, label: label}, {favorite: fav}, (err, results) => {
+    if (err) {
+      console.log('fav err', err);
+    } else {
+      // console.log('Faved: ', results);
+      return cb('results Faved');
+    }
+  });
+}
+
+// let unFav = (username, label, cb) => {
+//   Recipe.updateOne({username: username, label: label}, {favorite: false}, (err, results) => {
+//     if (err) {
+//       console.log('unfav err', err);
+//     } else {
+//       // console.log('Faved: ', results);
+//       return cb('results unfaved');
+//     }
+//   });
+// }
+
+let deleteAll = (username, cb) => {
+  Recipe.deleteMany({username: username}, (err, results) => {
+    if (err) {
+      console.log('delete err', err);
+    } else {
+      // console.log('Faved: ', results);
+      return cb('results deleted');
+    }
+  });
+}
+
+let find = (username) => {
   return Recipe.find({username: username}).sort({keyword: 1});
 }
 
-let findKeywordRecipes = async (username, keyword) => {
+let findFaved = (username) => {
+  return Recipe.find({username: username, favorite: true}).sort({keyword: 1});
+}
+
+let findKeywordRecipes = (username, keyword) => {
   return Recipe.find({username: username, keyword: keyword}).sort({label: 1});
 }
 
-let findCookableRecipes = async (username, terms) => {
+let findCookableRecipes = (username, terms) => {
   let termArr = terms.toUpperCase().split(' ');
   return Recipe.find({username: username, allIngrediants: {$all: termArr}}).sort({keyword: 1});
 }
@@ -78,9 +116,9 @@ let saveUser = async (data) => {
   return user.save();
 }
 
-let findUser = async (data) => {
+let findUser = (data) => {
   // return User.findOne( {username: data.username} ).sort({keyword: 1});
   return User.findOne( {username: data.username} );
 }
 
-module.exports = {getRecipes, save, find, findKeywordRecipes, findCookableRecipes, saveUser, findUser}
+module.exports = {getRecipes, save, fav, deleteAll, find, findFaved, findKeywordRecipes, findCookableRecipes, saveUser, findUser}

@@ -36,7 +36,7 @@ class SearchIngredients extends React.Component {
   render() {
     return (
       <div>
-        <input type="search" name="search" id="searchIng" className="search" placeholder="Need Cooking Ideas? Search Ingredients Here! (Type: cider lemon)" onChange={this.onChange.bind(this)} onKeyPress={this.keyress.bind(this)}></input>
+        <input type="search" name="search" id="searchIng" className="search" placeholder="Need Cooking Ideas from your saved recipes? (Search: cider lemon)" onChange={this.onChange.bind(this)} onKeyPress={this.keyress.bind(this)}></input>
         <button id="searchIng-Btn" className="search-Btn" onClick={this.search.bind(this)}>Search {'\uD83D\uDC39'}</button>
       </div>
     )

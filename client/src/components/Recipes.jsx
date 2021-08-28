@@ -12,7 +12,7 @@ class Recipes extends React.Component {
           this.props.recipes.map( recipe =>
             (
               <div className="recipe" key={recipe.label+'div'}>
-                <p id="label" key={recipe.label}><a href={recipe.url}>{'\uD83D\uDC39'} {recipe.label}</a></p>
+                <p id="label" key={recipe.label}><a href={recipe.url}>{'\uD83D\uDC39'} {recipe.label}</a><button id="save-recipe-Btn" name={recipe.label} className="save-recipe-Btn" onClick={this.props.favRecipe}> {this.props.favBtn}{'\uD83D\uDC39'}</button></p>
                 <img className="recipeImage" key={recipe.label+'image'} src={recipe.image} alt="RecipeImgMissing"  width="200" height="200" alt="RecipePhoto"></img>
                 <p id="cuisineType" key={recipe.label+'calories'}>CuisineType: {(recipe.cuisineType+'').toUpperCase()[0]+(recipe.cuisineType+'').substring(1)} {'\uD83D\uDC39'} Calories per Serving: {Math.round(recipe.calories/recipe.yield)}</p>
                 <ul className="list" key={recipe.label+'ingredient'}>

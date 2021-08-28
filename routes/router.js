@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {getRecipes, save, find, findKeywordRecipes, findCookableRecipes, saveUser, findUser} = require('../helper/getRecipes');
+const {getRecipes, save, fav, deleteAll, find, findFaved, findKeywordRecipes, findCookableRecipes, saveUser, findUser} = require('../helper/getRecipes');
 
 router.post('/recipes', (req, res) => {
   // console.log('post /recipes working?');
@@ -29,16 +29,38 @@ router.post('/recipes', (req, res) => {
 })
 
 
-// app.get('/', (req, res) => {
-//   res.send('Hello World from server index.js Home!');
-// })
+router.put('/favorite', (req, res) => {
+  console.log('router fav', req.body);
+  // fav(req.body.username, req.body.label, (favRecipe) => {console.log('saved in router? ', favRecipe)})
+  if (req.query.favBtn === 'UnFav') {
+    // unFav(req.body.username, req.body.label, (favRecipe) => {console.log('saved in router? ', favRecipe)})
+    fav(req.body.username, req.body.label, false, (favRecipe) => {console.log('saved in router? ', favRecipe)})
+  } else {
+    fav(req.body.username, req.body.label, true, (favRecipe) => {console.log('saved in router? ', favRecipe)})
+  }
+})
 
 router.get('/recipes', async (req, res) => {
   console.log('req.body,,,', req.data, req.params, res.data, res.params, req.query);
   try {
-    savedRecipes = await find(req.query.username);
+    if (req.query.fav) {
+      savedRecipes = await findFaved(req.query.username);
+    } else {
+      savedRecipes = await find(req.query.username);
+    }
     // console.log(savedRecipes.length, savedRecipes[0].keyword);
     res.send(savedRecipes);
+  }
+  catch(err) {
+    res.status(400).send(`Oooooops, didn't find any matching recipe from your database!`);
+  }
+})
+
+router.delete('/recipes', async (req, res) => {
+  console.log('req.body,,,', req.data, req.params, res.data, res.params, req.query);
+  try {
+    deleteRecipes = await deleteAll(req.query.username, (deleteRecipes) => {console.log('saved in router? ', deleteRecipes)});
+    res.send(deleteRecipes);
   }
   catch(err) {
     res.status(400).send(`Oooooops, didn't find any matching recipe from your database!`);

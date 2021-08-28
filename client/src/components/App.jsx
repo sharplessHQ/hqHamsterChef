@@ -45,7 +45,9 @@ class App extends React.Component {
       password: '',
       showRecipe: false,
       message: '',
-      toLogin: false
+      toLogin: false,
+      showFav: false,
+      favBtn: 'Fav'
     };
   }
 
@@ -61,7 +63,17 @@ class App extends React.Component {
     console.log('getRecipes State:', this.state);
     // let username = localStorage.getItem('user');
     let username = this.state.username;
-    axios.get(`/recipes?username=${username}`)
+    let endpoint, favBtn;
+    if (this.state.showFav) {
+      console.log('show fav', this.state.showFav);
+      endpoint = `/recipes?username=${username}&fav=true`;
+      favBtn = 'UnFav';
+    } else {
+      console.log('no show fav', this.state.showFav);
+      endpoint = `/recipes?username=${username}`;
+      favBtn = 'Fav';
+    }
+    axios.get(endpoint)
     // axios.get('/recipes', {params:{username: this.state.username}})
       .then(res => res.data)
       .then(data => {
@@ -97,13 +109,13 @@ class App extends React.Component {
 
         if(keyword) {
           if (typeof(keyword) === 'string') {
-            this.setState( {recipes: dataRecipeList[keyword], keywordList: dataKeywordList, recipeList: dataRecipeList} );
+            this.setState( {recipes: dataRecipeList[keyword], keywordList: dataKeywordList, recipeList: dataRecipeList, favBtn: favBtn} );
           } else if (Array.isArray(keyword)) {
             console.log(keyword);
-            this.setState( {recipes: allCookable, keywordList: dataKeywordList, recipeList: dataRecipeList, cookableRecipes: allCookable} );
+            this.setState( {recipes: allCookable, keywordList: dataKeywordList, recipeList: dataRecipeList, cookableRecipes: allCookable, favBtn: favBtn} );
           }
         } else {
-          this.setState( {recipes: data, keywordList: dataKeywordList, recipeList: dataRecipeList} );
+          this.setState( {recipes: data, keywordList: dataKeywordList, recipeList: dataRecipeList, favBtn: favBtn} );
         }
 
         // console.log('this.state.recipes in get,,,', this.state.recipes);
@@ -130,6 +142,95 @@ class App extends React.Component {
     this.getRecipes();
   }
 
+  favRecipe(event) {
+    console.log('event', event.target.name);
+    let username = this.state.username;
+    let endpoint, showFav;
+    // let favBtn;
+    if (this.state.favBtn === 'Fav') {
+      console.log('show fav', this.state.favBtn);
+      endpoint = `/favorite`;
+      // favBtn = 'UnFav';
+      showFav = false;
+    } else {
+      console.log('show unFav', this.state.favBtn);
+      endpoint = `/favorite?favBtn=${this.state.favBtn}`;
+      // favBtn = 'Fav';
+      showFav = true;
+    }
+
+    // let label = this.state.label;
+    let label = event.target.name;
+    console.log(`${label} was fav saved!`);
+
+    axios.put(endpoint, {label: label, username: this.state.username})
+      .then(msg => {
+        // console.log('msg', msg)
+        console.log(`fav ajax worked: ${msg.data}`);
+        $("#update").text(msg.data);
+        // this.getRecipes();
+        this.setState({
+           showFav: true
+        }, ()=> {
+          console.log('unfaved one? ', this.state.showFav);
+          this.getRecipes();
+        })
+      })
+      .catch(err => {
+        console.log(`fav ajax worked: ${err}`);
+      })
+
+    this.getRecipes();
+
+    this.setState({
+      showFav: showFav
+    }, ()=> {
+      console.log('unfaved one???? ', this.state.showFav);
+      this.getRecipes();
+    })
+  }
+
+  showFavRecipe() {
+    this.setState({
+      showFav: true
+    }, ()=> {
+      console.log('changed to showFav? ', this.state.showFav);
+      this.getRecipes();
+    })
+  }
+
+  showAllRecipe() {
+    this.setState({
+      showFav: false
+    }, ()=> {
+      console.log('changed to showAll? ', this.state.showFav);
+      this.getRecipes();
+    })
+  }
+
+  deleteAllRecipe() {
+    let username = this.state.username
+    axios.delete(`/recipes?username=${username}`)
+      .then(msg => {
+        // console.log('msg', msg)
+        console.log(`delete ajax worked: ${msg.data}`);
+        $("#update").text(msg.data);
+        // this.getRecipes();
+        this.setState({
+          recipes: [],
+          keywordList: [],
+          recipeList: {},
+          cookableRecipes: []
+        }, ()=> {
+          console.log('deleted all? ', this.state);
+          this.getRecipes();
+        })
+      })
+      .catch(err => {
+        console.log(`delete ajax worked: ${err}`);
+      })
+
+  }
 
   handleRegister(event) {
     this.setState({
@@ -269,9 +370,9 @@ class App extends React.Component {
               <div className="allContent">
                 <SearchRecipe searchRecipe={this.searchRecipe.bind(this)} recipes={this.state.recipes} keywordList={this.state.keywordList} recipeList={this.state.recipeList}/>
                 <p id="update"></p>
-                <RecipeList getRecipes={this.getRecipes.bind(this)} recipes={this.state.recipes} keywordList={this.state.keywordList} recipeList={this.state.recipeList}/>
+                <RecipeList getRecipes={this.getRecipes.bind(this)} showFavRecipe={this.showFavRecipe.bind(this)} showAllRecipe={this.showAllRecipe.bind(this)} deleteAllRecipe={this.deleteAllRecipe.bind(this)} recipes={this.state.recipes} keywordList={this.state.keywordList} recipeList={this.state.recipeList}/>
                 <SearchIngredients getRecipes={this.getRecipes.bind(this)} recipes={this.state.recipes} keywordList={this.state.keywordList} recipeList={this.state.recipeList} cookableRecipes={this.state.cookableRecipes}/>
-                <Recipes recipes={this.state.recipes} keywordList={this.state.keywordList} recipeList={this.state.recipeList}/>
+                <Recipes recipes={this.state.recipes} keywordList={this.state.keywordList} recipeList={this.state.recipeList}  favBtn={this.state.favBtn} favRecipe={this.favRecipe.bind(this)}/>
               </div>
             </div>
           </Suspense>

@@ -24,7 +24,11 @@ class RecipeList extends React.Component {
   render() {
     return (
       <div>
-        <h3>There are total {this.props.recipes.length} recipes in your database!</h3>
+        <h3>There are total {this.props.recipes.length} recipes in your database!
+          <button id="fav-recipe-Btn" className="fav-recipe-Btn" onClick={this.props.showFavRecipe}> Show Fav {'\uD83D\uDC39'}</button>
+          <button id="fav-recipe-Btn" className="fav-recipe-Btn" onClick={this.props.showAllRecipe}> Show All {'\uD83D\uDC39'}</button>
+          <button id="fav-recipe-Btn" className="fav-recipe-Btn" onClick={this.props.deleteAllRecipe}> Delete All {'\uD83D\uDC39'}</button>
+        </h3>
         <table id="table">
           <thead>
             <tr>

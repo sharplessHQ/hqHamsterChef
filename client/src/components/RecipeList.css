@@ -18,3 +18,14 @@ td {
 #keyList {
   color: #005E61;
 }
+
+.fav-recipe-Btn {
+  /* width: 50%; */
+  cursor: pointer;
+  color: #005E61;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: #06C0C2;
+  margin-left: 20px;
+}

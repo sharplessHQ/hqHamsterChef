@@ -14,7 +14,8 @@ const recipeSchema = new Schema({
   allIngrediants: Array,
   url: String,
   cuisineType: Array,
-  yield: Number
+  yield: Number,
+  favorite: Boolean
 });
 
 const userSchema = new Schema({
