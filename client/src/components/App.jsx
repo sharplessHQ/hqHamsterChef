@@ -60,25 +60,22 @@ class App extends React.Component {
   }
 
   getRecipes(keyword) {
-    console.log('getRecipes State:', this.state);
+    // console.log('getRecipes State:', this.state);
     // let username = localStorage.getItem('user');
     let username = this.state.username;
     let endpoint, favBtn;
     if (this.state.showFav) {
-      console.log('show fav', this.state.showFav);
+      // console.log('show fav', this.state.showFav);
       endpoint = `/recipes?username=${username}&fav=true`;
       favBtn = 'UnFav';
     } else {
-      console.log('no show fav', this.state.showFav);
+      // console.log('no show fav', this.state.showFav);
       endpoint = `/recipes?username=${username}`;
       favBtn = 'Fav';
     }
     axios.get(endpoint)
-    // axios.get('/recipes', {params:{username: this.state.username}})
       .then(res => res.data)
       .then(data => {
-        // console.log('data', data)
-        // $("#update").text('');
         let dataRecipeList = {};
         let dataKeywordList = [];
         let allCookable = [];
@@ -95,7 +92,7 @@ class App extends React.Component {
           if (Array.isArray(keyword)) {
             let hasAll = true;
             keyword.forEach( key => {
-              console.log(key);
+              // console.log(key);
               if (!item.allIngrediants.includes(key)) {
                 hasAll = false;
                 return;
@@ -111,28 +108,23 @@ class App extends React.Component {
           if (typeof(keyword) === 'string') {
             this.setState( {recipes: dataRecipeList[keyword], keywordList: dataKeywordList, recipeList: dataRecipeList, favBtn: favBtn} );
           } else if (Array.isArray(keyword)) {
-            console.log(keyword);
+            // console.log(keyword);
             this.setState( {recipes: allCookable, keywordList: dataKeywordList, recipeList: dataRecipeList, cookableRecipes: allCookable, favBtn: favBtn} );
           }
         } else {
           this.setState( {recipes: data, keywordList: dataKeywordList, recipeList: dataRecipeList, favBtn: favBtn} );
         }
-
-        // console.log('this.state.recipes in get,,,', this.state.recipes);
-        // console.log('this.state.keywordList in get,,,', this.state.keywordList);
-        // console.log('this.state.recipesList in get,,,', this.state.recipeList);
       })
       .catch( err=> console.log('err,,,', err))
   }
 
   searchRecipe(key) {
-    console.log(`${key} was searched!`);
+    // console.log(`${key} was searched!`);
 
     axios.post('/recipes', {keyword: key, username: this.state.username})
       .then(msg => {
         // console.log('msg', msg)
-        console.log(`search ajax worked: ${msg.data}`);
-        $("#update").text(msg.data);
+        // console.log(`search ajax worked: ${msg.data}`);
         this.getRecipes();
       })
       .catch(err => {
@@ -143,17 +135,17 @@ class App extends React.Component {
   }
 
   favRecipe(event) {
-    console.log('event', event.target.name);
+    // console.log('event', event.target.name);
     let username = this.state.username;
     let endpoint, showFav;
     // let favBtn;
     if (this.state.favBtn === 'Fav') {
-      console.log('show fav', this.state.favBtn);
+      // console.log('show fav', this.state.favBtn);
       endpoint = `/favorite`;
       // favBtn = 'UnFav';
       showFav = false;
     } else {
-      console.log('show unFav', this.state.favBtn);
+      // console.log('show unFav', this.state.favBtn);
       endpoint = `/favorite?favBtn=${this.state.favBtn}`;
       // favBtn = 'Fav';
       showFav = true;
@@ -161,20 +153,11 @@ class App extends React.Component {
 
     // let label = this.state.label;
     let label = event.target.name;
-    console.log(`${label} was fav saved!`);
+    // console.log(`${label} was fav saved!`);
 
     axios.put(endpoint, {label: label, username: this.state.username})
       .then(msg => {
-        // console.log('msg', msg)
         console.log(`fav ajax worked: ${msg.data}`);
-        $("#update").text(msg.data);
-        // this.getRecipes();
-        this.setState({
-           showFav: true
-        }, ()=> {
-          console.log('unfaved one? ', this.state.showFav);
-          this.getRecipes();
-        })
       })
       .catch(err => {
         console.log(`fav ajax worked: ${err}`);
@@ -185,7 +168,7 @@ class App extends React.Component {
     this.setState({
       showFav: showFav
     }, ()=> {
-      console.log('unfaved one???? ', this.state.showFav);
+      // console.log('unfaved one???? ', this.state.showFav);
       this.getRecipes();
     })
   }
@@ -194,7 +177,7 @@ class App extends React.Component {
     this.setState({
       showFav: true
     }, ()=> {
-      console.log('changed to showFav? ', this.state.showFav);
+      // console.log('changed to showFav? ', this.state.showFav);
       this.getRecipes();
     })
   }
@@ -203,7 +186,7 @@ class App extends React.Component {
     this.setState({
       showFav: false
     }, ()=> {
-      console.log('changed to showAll? ', this.state.showFav);
+      // console.log('changed to showAll? ', this.state.showFav);
       this.getRecipes();
     })
   }
@@ -212,17 +195,14 @@ class App extends React.Component {
     let username = this.state.username
     axios.delete(`/recipes?username=${username}`)
       .then(msg => {
-        // console.log('msg', msg)
-        console.log(`delete ajax worked: ${msg.data}`);
-        $("#update").text(msg.data);
-        // this.getRecipes();
+        // console.log(`delete ajax worked: ${msg.data}`);
         this.setState({
           recipes: [],
           keywordList: [],
           recipeList: {},
           cookableRecipes: []
         }, ()=> {
-          console.log('deleted all? ', this.state);
+          // console.log('deleted all? ', this.state);
           this.getRecipes();
         })
       })
@@ -239,20 +219,19 @@ class App extends React.Component {
   }
 
   register() {
-    console.log("name", document.getElementById("username").value);
+    // console.log("name", document.getElementById("username").value);
     const data = {
       username: this.state.username,
       password: this.state.password
     };
-    console.log('state before register', this.state)
+    // console.log('state before register', this.state)
 
     axios.post('/register', data)
       .then(result => {
-        // console.log(result, typeof result);
-        console.log('result from app:', result.data.split(' ')[0], result.data);
+        // console.log('result from app:', result.data.split(' ')[0], result.data);
         let newState;
         if (result.data === 'nullEntry') {
-          console.log('Cannot be null', result.data);
+          // console.log('Cannot be null', result.data);
           newState = {
             message: 'Cannot be null!'
           };
@@ -272,7 +251,7 @@ class App extends React.Component {
           this.login();
         }
         this.setState(newState);
-        console.log('state after register', this.state);
+        // console.log('state after register', this.state);
       })
       .catch(err => console.log('err:, err'))
   }
@@ -284,21 +263,18 @@ class App extends React.Component {
   }
 
   login() {
-    console.log("name", document.getElementById("username").value);
+    // console.log("name", document.getElementById("username").value);
     const data = {
       username: this.state.username,
       password: this.state.password
     };
-    console.log('state before register', this.state)
+    // console.log('state before register', this.state)
 
     axios.post('/login', data)
       .then(result => {
-        // console.log(result, typeof result);
-        // localStorage.setItem('user', this.state.username);
-        console.log('password correct?', result.data);
+        // console.log('password correct?', result.data);
         let newState;
         if (this.state.toLogin) {
-          // localStorage.removeItem('user');
           newState = {
             password: '',
             message: 'Username exists! Please login!',
@@ -321,7 +297,7 @@ class App extends React.Component {
           };
         }
         this.setState(newState);
-        console.log('state after register', this.state);
+        // console.log('state after register', this.state);
       })
       .catch(err => console.log('err:, err'))
     this.getRecipes();
@@ -350,7 +326,6 @@ class App extends React.Component {
 
   render() {
     if (!this.state.showRecipe) {
-      // console.log('haha')
       return (
         <ErrorBoundary>
           <Suspense fallback={renderLoader()}>
@@ -381,13 +356,5 @@ class App extends React.Component {
     }
   }
 }
-
-// const HelloWorld = () => {
-//   return (
-//     <h1>
-//       Hello World from recipe scr index.jsx!!
-//     </h1>
-//   );
-// }
 
 export default App;

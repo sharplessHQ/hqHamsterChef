@@ -6,7 +6,7 @@ const {getRecipes, save, fav, deleteAll, find, findFaved, findKeywordRecipes, fi
 router.post('/recipes', (req, res) => {
   // console.log('post /recipes working?');
   // res.send('Hello World from server!!!');
-  console.log('router', req.body.keyword, req.body.username);
+  // console.log('router', req.body.keyword, req.body.username);
   getRecipes( req.body.keyword, (data) => {
     let allRecipes = [];
     data.hits.forEach( (item) => {
@@ -30,7 +30,7 @@ router.post('/recipes', (req, res) => {
 
 
 router.put('/favorite', (req, res) => {
-  console.log('router fav', req.body);
+  // console.log('router fav', req.body);
   // fav(req.body.username, req.body.label, (favRecipe) => {console.log('saved in router? ', favRecipe)})
   if (req.query.favBtn === 'UnFav') {
     // unFav(req.body.username, req.body.label, (favRecipe) => {console.log('saved in router? ', favRecipe)})
@@ -41,7 +41,7 @@ router.put('/favorite', (req, res) => {
 })
 
 router.get('/recipes', async (req, res) => {
-  console.log('req.body,,,', req.data, req.params, res.data, res.params, req.query);
+  // console.log('req.body,,,', req.data, req.params, res.data, res.params, req.query);
   try {
     if (req.query.fav) {
       savedRecipes = await findFaved(req.query.username);
@@ -57,7 +57,7 @@ router.get('/recipes', async (req, res) => {
 })
 
 router.delete('/recipes', async (req, res) => {
-  console.log('req.body,,,', req.data, req.params, res.data, res.params, req.query);
+  // console.log('req.body,,,', req.data, req.params, res.data, res.params, req.query);
   try {
     deleteRecipes = await deleteAll(req.query.username, (deleteRecipes) => {console.log('saved in router? ', deleteRecipes)});
     res.send(deleteRecipes);
@@ -70,18 +70,17 @@ router.delete('/recipes', async (req, res) => {
 // app.get('/register', (req, res) => res.redirect('https://stackoverflow.com'))
 router.post('/register', (req, res) => {
   // res.redirect('/register');
-  console.log('req.body', req.body);
-  // saveUser(req.body, (saveUsr) => {console.log(saveUser)})
+  // console.log('req.body', req.body);
   saveUser(req.body)
   .then(user => {
     if (user === `User ${req.body.username} exists!`) {
-      console.log('user exists', req.body.username);
+      // console.log('user exists', req.body.username);
       // res.redirect('/login');
       res.send(user);
     } else if (user === 'nullEntry') {
       res.send(user)
     } else {
-      console.log('user', user);
+      // console.log('user', user);
       res.send(`New user ${user.username} has been saved!`)
     }
   })
@@ -90,17 +89,17 @@ router.post('/register', (req, res) => {
 
 router.post('/login', (req, res) => {
   // res.redirect('/register');
-  console.log('req.body', req.body);
+  // console.log('req.body', req.body);
   findUser(req.body)
   .then(user => {
-    console.log('user in router:', user)
+    // console.log('user in router:', user)
     if (!user) {
       res.send('noExistUser');
     } else if (req.body.password === user.password) {
-      console.log('Successfully login as:', req.body.password, user.username, user.password);
+      // console.log('Successfully login as:', req.body.password, user.username, user.password);
       res.send('successLogin');
     } else {
-      console.log('Unsuccessfully login as:', req.body.password, user.username, user.password);
+      // console.log('Unsuccessfully login as:', req.body.password, user.username, user.password);
       res.send(`failLogin`)
     }
   })

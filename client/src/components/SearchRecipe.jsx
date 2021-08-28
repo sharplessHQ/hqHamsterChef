@@ -10,14 +10,14 @@ class SearchRecipe extends React.Component {
   }
 
   onChange(e) {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     this.setState( {
       key: e.target.value
     } )
   }
 
   keyress(e) {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     if (e.key === 'Enter') {
       this.search();
     }

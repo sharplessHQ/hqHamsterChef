@@ -12,9 +12,6 @@ class RecipeList extends React.Component {
   }
 
   getKeyRecipes(e) {
-    // console.log('this outside,,,,', this);
-    $("#update").text('');
-    console.log('e outside,,,,', e.target.textContent);
     this.setState( {
       keyword: e.target.textContent
     });
