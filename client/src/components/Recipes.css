@@ -18,13 +18,10 @@ a {
   border-radius: 30px;
 }
 
-.recipe {
-  text-align: center;
-}
-
 ul{
   display: inline-block;
   text-align: left;
+  margin-right: 20px;
 }
 
 .save-recipe-Btn {
@@ -36,4 +33,22 @@ ul{
   border-radius: 10px;
   background-color: #06C0C2;
   margin-left: 20px;
+}
+
+.recipes {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.recipe-container {
+  border-radius: 10px;
+  box-shadow: 0px 5px 20px grey;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  /* background: rgb(218, 214, 214); */
+  align-items: center;
+  min-width: 30%;
 }
