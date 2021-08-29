@@ -115,7 +115,10 @@ class App extends React.Component {
           this.setState( {recipes: data, keywordList: dataKeywordList, recipeList: dataRecipeList, favBtn: favBtn} );
         }
       })
-      .catch( err=> console.log('err,,,', err))
+      .catch( err=> {
+        console.log('err,,,', err);
+        throw err;
+      })
   }
 
   searchRecipe(key) {
@@ -129,6 +132,7 @@ class App extends React.Component {
       })
       .catch(err => {
         console.log(`search ajax worked: ${err}`);
+        throw err;
       })
 
     this.getRecipes();
@@ -161,6 +165,7 @@ class App extends React.Component {
       })
       .catch(err => {
         console.log(`fav ajax worked: ${err}`);
+        throw err;
       })
 
     this.getRecipes();
@@ -253,7 +258,10 @@ class App extends React.Component {
         this.setState(newState);
         // console.log('state after register', this.state);
       })
-      .catch(err => console.log('err:, err'))
+      .catch(err => {
+        console.log('err:, err');
+        throw err;
+      })
   }
 
   handleLogin(event) {
@@ -299,7 +307,10 @@ class App extends React.Component {
         this.setState(newState);
         // console.log('state after register', this.state);
       })
-      .catch(err => console.log('err:, err'))
+      .catch(err => {
+        console.log('err:, err')
+        throw err;
+      })
     this.getRecipes();
   }
 

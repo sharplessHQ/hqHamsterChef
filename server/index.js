@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 const compression = require('compression');
+
+// const db = require('../database/index')
+
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -12,10 +15,10 @@ dotenv.config();
 
 
 
-const mongoose = require ('mongoose');
+// const mongoose = require ('mongoose');
 
-mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .catch(error => console.log('MongoDB connection error'));
+// mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .catch(error => console.log('MongoDB connection error'));
 
 const router = require('../routes/router.js');
 app.use('/', router)

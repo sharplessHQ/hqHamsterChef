@@ -1,8 +1,8 @@
 const axios = require('axios').default;
-const {Recipe, User} = require('../models/schema.js');
+const {Recipe, User} = require('../models/recipe');
 
 let getRecipes = (keyword, callback) => {
-  const API_URI=`https://api.edamam.com/search?q=${keyword}&app_id=${process.env.API_ID}&app_key=${process.env.API_KEY}&from=0&to=3`;
+  const API_URI=`https://api.edamam.com/search?q=${keyword}&app_id=${process.env.API_ID}&app_key=${process.env.API_KEY}&from=0&to=6`;
 
   axios.get(API_URI)
     .then( res => {
@@ -59,17 +59,6 @@ let fav = (username, label, fav, cb) => {
     }
   });
 }
-
-// let unFav = (username, label, cb) => {
-//   Recipe.updateOne({username: username, label: label}, {favorite: false}, (err, results) => {
-//     if (err) {
-//       console.log('unfav err', err);
-//     } else {
-//       // console.log('Faved: ', results);
-//       return cb('results unfaved');
-//     }
-//   });
-// }
 
 let deleteAll = (username, cb) => {
   Recipe.deleteMany({username: username}, (err, results) => {

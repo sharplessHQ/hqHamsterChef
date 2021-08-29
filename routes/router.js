@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const db = require('../database/index')
 
-const {getRecipes, save, fav, deleteAll, find, findFaved, findKeywordRecipes, findCookableRecipes, saveUser, findUser} = require('../helper/getRecipes');
+const {getRecipes, save, fav, deleteAll, find, findFaved, findKeywordRecipes, findCookableRecipes, saveUser, findUser} = require('../database/controllers/recipe');
 
 router.post('/recipes', (req, res) => {
   // console.log('post /recipes working?');

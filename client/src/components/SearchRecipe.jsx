@@ -31,7 +31,7 @@ class SearchRecipe extends React.Component {
   render() {
     return (
       <div>
-        <input type="search" name="search" id="search" className="search" placeholder="Search Recipe Here" onChange={this.onChange.bind(this)} onKeyPress={this.keyress.bind(this)}></input>
+        <input type="search" name="search" id="search" className="search" placeholder="Search recipe keyword here (Search: fish)" onChange={this.onChange.bind(this)} onKeyPress={this.keyress.bind(this)}></input>
         <button id="search-Btn" className="search-Btn" onClick={this.search.bind(this)}>Search {'\uD83D\uDC39'}</button>
       </div>
     )
