@@ -2,7 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-    entry: path.join(__dirname, "client/src", "index.jsx"),
+    entry: ["regenerator-runtime/runtime.js", path.join(__dirname, "client/src", "index.jsx")],
     devtool: 'inline-source-map',
     output: { path: path.join(__dirname, "client/build"), filename: "bundle.js" },
     mode: process.env.NODE_ENV || "development",

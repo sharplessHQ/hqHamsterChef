@@ -1,4 +1,5 @@
 import React, { lazy, Suspense } from 'react';
+import 'regenerator-runtime/runtime';
 const Recipes = lazy( () => import('./Recipes.jsx'));
 const RecipeList = lazy( () => import('./RecipeList.jsx'));
 const SearchRecipe = lazy( () => import('./SearchRecipe.jsx'));
@@ -42,6 +43,7 @@ class App extends React.Component {
       recipeList: {},
       cookableRecipes: [],
       username: '',
+      userId: '',
       password: '',
       showRecipe: false,
       message: '',
@@ -109,7 +111,7 @@ class App extends React.Component {
             this.setState( {recipes: dataRecipeList[keyword], keywordList: dataKeywordList, recipeList: dataRecipeList, favBtn: favBtn} );
           } else if (Array.isArray(keyword)) {
             // console.log(keyword);
-            this.setState( {recipes: allCookable, keywordList: dataKeywordList, recipeList: dataRecipeList, cookableRecipes: allCookable, favBtn: favBtn} );
+            this.setState( {recipes: allCookable, keywordList: dataKeywordList, recipeList: dataRecipeList, cookableRecipes: allCookable, favBtn: favBtn});
           }
         } else {
           this.setState( {recipes: data, keywordList: dataKeywordList, recipeList: dataRecipeList, favBtn: favBtn} );
@@ -121,7 +123,7 @@ class App extends React.Component {
       })
   }
 
-  searchRecipe(key) {
+  async searchRecipe(key) {
     // console.log(`${key} was searched!`);
 
     axios.post('/recipes', {keyword: key, username: this.state.username})
@@ -138,7 +140,7 @@ class App extends React.Component {
     this.getRecipes();
   }
 
-  favRecipe(event) {
+  async favRecipe(event) {
     // console.log('event', event.target.name);
     let username = this.state.username;
     let endpoint, showFav;
@@ -156,10 +158,10 @@ class App extends React.Component {
     }
 
     // let label = this.state.label;
-    let label = event.target.name;
+    let id = event.target.id;
     // console.log(`${label} was fav saved!`);
 
-    axios.put(endpoint, {label: label, username: this.state.username})
+    axios.put(endpoint, {id: id, username: this.state.username})
       .then(msg => {
         console.log(`fav ajax worked: ${msg.data}`);
       })
@@ -196,7 +198,7 @@ class App extends React.Component {
     })
   }
 
-  deleteAllRecipe() {
+  async deleteAllRecipe() {
     let username = this.state.username
     axios.delete(`/recipes?username=${username}`)
       .then(msg => {
@@ -223,7 +225,7 @@ class App extends React.Component {
     })
   }
 
-  register() {
+  async register() {
     // console.log("name", document.getElementById("username").value);
     const data = {
       username: this.state.username,
@@ -233,6 +235,7 @@ class App extends React.Component {
 
     axios.post('/register', data)
       .then(result => {
+        // console.log('result from app:', result.data);
         // console.log('result from app:', result.data.split(' ')[0], result.data);
         let newState;
         if (result.data === 'nullEntry') {
@@ -240,10 +243,13 @@ class App extends React.Component {
           newState = {
             message: 'Cannot be null!'
           };
-        } else if (result.data.split(' ')[0] === 'New') {
+        // } else if (result.data.split(' ')[0] === 'New') {
+        } else if (result.data._id) {
+          // console.log(result.data._id);
           localStorage.setItem('user', this.state.username);
           newState = {
-            showRecipe: true
+            showRecipe: true,
+            userId: result.data._id
           };
           this.getRecipes();
         } else {
@@ -255,7 +261,7 @@ class App extends React.Component {
           localStorage.setItem('user', this.state.username);
           this.login();
         }
-        this.setState(newState);
+        this.setState(newState, ()=>console.log('register state', this.state));
         // console.log('state after register', this.state);
       })
       .catch(err => {
@@ -270,7 +276,7 @@ class App extends React.Component {
     })
   }
 
-  login() {
+  async login() {
     // console.log("name", document.getElementById("username").value);
     const data = {
       username: this.state.username,
@@ -292,10 +298,12 @@ class App extends React.Component {
           newState = {
             message: 'Not a existing user! Try again!'
           }
-        } else if (result.data === 'successLogin') {
+        // } else if (result.data === 'successLogin') {
+        } else if (result.data._id) {
           localStorage.setItem('user', this.state.username);
           newState = {
-            showRecipe: true
+            showRecipe: true,
+            userId: result.data._id
           };
         } else {
           newState = {
@@ -304,7 +312,7 @@ class App extends React.Component {
             message: 'Incorrect Password. Try again!'
           };
         }
-        this.setState(newState);
+        this.setState(newState, ()=>console.log('login success: ', this.state));
         // console.log('state after register', this.state);
       })
       .catch(err => {
@@ -318,6 +326,7 @@ class App extends React.Component {
     localStorage.removeItem('user');
     this.setState({
       username: '',
+      userId: '',
       password: '',
       showRecipe: false,
       message: ''
@@ -358,7 +367,7 @@ class App extends React.Component {
                 <p id="update"></p>
                 <RecipeList getRecipes={this.getRecipes.bind(this)} showFavRecipe={this.showFavRecipe.bind(this)} showAllRecipe={this.showAllRecipe.bind(this)} deleteAllRecipe={this.deleteAllRecipe.bind(this)} recipes={this.state.recipes} keywordList={this.state.keywordList} recipeList={this.state.recipeList}/>
                 <SearchIngredients getRecipes={this.getRecipes.bind(this)} recipes={this.state.recipes} keywordList={this.state.keywordList} recipeList={this.state.recipeList} cookableRecipes={this.state.cookableRecipes}/>
-                <Recipes recipes={this.state.recipes} keywordList={this.state.keywordList} recipeList={this.state.recipeList}  favBtn={this.state.favBtn} favRecipe={this.favRecipe.bind(this)}/>
+                <Recipes recipes={this.state.recipes} keywordList={this.state.keywordList} recipeList={this.state.recipeList} showFav={this.state.showFav} favBtn={this.state.favBtn} favRecipe={this.favRecipe.bind(this)}/>
               </div>
             </div>
           </Suspense>

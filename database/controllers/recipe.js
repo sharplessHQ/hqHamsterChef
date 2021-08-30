@@ -49,8 +49,8 @@ let save = async (username, keyword, data, cb) => {
   return recipe.save();
 }
 
-let fav = (username, label, fav, cb) => {
-  Recipe.updateOne({username: username, label: label}, {favorite: fav}, (err, results) => {
+let fav = (username, id, fav, cb) => {
+  Recipe.updateOne({username: username, _id: id}, {favorite: fav}, (err, results) => {
     if (err) {
       console.log('fav err', err);
     } else {
