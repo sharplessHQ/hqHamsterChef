@@ -2,7 +2,7 @@
 
 A full stack recipe search web application using Edamam API.
 
-### https://hqhamsterchef.herokuapp.com
+### https://hqhamsterchef.onrender.com
 
 ## Getting Started
 
